@@ -1,0 +1,163 @@
+#include <Arduboy2.h>
+#include <Keyboard.h>
+
+Arduboy2 arduboy;
+
+// Options
+const char option0[] PROGMEM = "HOTMAIL";
+const char option1[] PROGMEM = "FACEBOOK";
+const char option2[] PROGMEM = "INSTAGRAM";
+const char option3[] PROGMEM = "GMAIL";
+const char option4[] PROGMEM = "TWITTER";
+const char option5[] PROGMEM = "OUTROS";
+
+// Put options into an array
+const char * const options[] PROGMEM =
+{
+  option0,
+  option1,
+  option2,
+  option3,
+  option4,
+  option5,
+};
+
+// Calculates the size of the array.
+// Don't worry too much about how this works.
+const uint8_t optionCount = sizeof(options) / sizeof(options[0]);
+
+// Index of last option.
+// One less than the number of options because it's zero-based.
+const uint8_t maxIndex = optionCount - 1;
+
+// Don't worry about what this does unless you're prepared for a long explanation.
+// It requires explaining things about the type system, reinterpret_cast,
+// pointers and progmem.
+const __FlashStringHelper * FlashString(const char * string)
+{
+  return reinterpret_cast<const __FlashStringHelper *>(string);
+}
+
+// The variable for storing the index of currently selected item.
+uint8_t selectedIndex;
+
+void setup(void)
+{
+  arduboy.begin();
+  Keyboard.begin();
+}
+
+void loop(void)
+{
+
+            carteiraSenha();
+      
+
+
+}
+
+
+
+void carteiraSenha(void)
+{
+
+  // Don't run until the next frame is ready
+  if(!arduboy.nextFrame())
+    return;
+  
+  // Update buttons so 'justPressed' works
+  arduboy.pollButtons();
+  
+  if(arduboy.justPressed(UP_BUTTON))
+  {
+    // If selected index is more than zero, decrease it by 1.
+    // This has the effect of stopping selectedIndex from
+    // being less than 0.
+    if(selectedIndex > 0)
+      --selectedIndex;
+  }
+  
+  if(arduboy.justPressed(DOWN_BUTTON))
+  {
+    // If selected index is less than maxIndex, decrease it by 1.
+    // This has the effect of stopping selectedIndex from
+    // being more than maxIndex.
+    if(selectedIndex < maxIndex)
+      ++selectedIndex;
+  }
+  
+  if(arduboy.justPressed(A_BUTTON))
+  {
+    // Handle what happens when the option is confirmed
+
+
+      switch (selectedIndex) {
+  case 0:
+    // faz algo quando var é igual a 1
+    Keyboard.print("TROCA DE SENHA 0");
+    delay(100);
+    break;
+   case 1:
+    // faz algo quando var é igual a 1
+    Keyboard.print("TROCA DE SENHA 1");
+    delay(100);
+    break;
+   case 2:
+    // faz algo quando var é igual a 1
+    Keyboard.print("TROCA DE SENHA 2");
+    delay(100);
+    break;
+   case 3:
+    // faz algo quando var é igual a 1
+    Keyboard.print("TROCA DE SENHA 3");
+    delay(100);
+    break;   
+   case 4:
+    // faz algo quando var é igual a 1
+    Keyboard.print("TROCA DE SENHA 4");
+    delay(100);
+    break; 
+   case 5:
+    // faz algo quando var é igual a 1
+    Keyboard.print("TROCA DE SENHA 5");
+    delay(100);
+    break;   
+  default:
+    // Se nenhum dos anteriores, faz o caso padrão default
+    // default é opcional
+    break;
+}
+ 
+  }
+  
+  // Clear screen buffer
+  arduboy.clear();
+  
+  // Set cursor position
+  arduboy.setCursor(0, 0);
+  
+  // Loop through all options
+  for(uint8_t i = 0; i < optionCount; ++i)
+  {
+    // If the current option is the selected option;
+    if(i == selectedIndex)
+    {
+      // Draw an arrow
+      arduboy.print(F("> "));
+    }
+    else
+    {
+      // Otherwise just indent
+      arduboy.print(F("  "));
+    }
+  
+    // Print the string in the array
+    // This is quite complicated if you don't know about
+    // pointers and casting.
+    arduboy.println(FlashString(pgm_read_word(&options[i])));
+  }
+  
+  // Update screen with buffer contents
+  arduboy.display();
+}
+  
